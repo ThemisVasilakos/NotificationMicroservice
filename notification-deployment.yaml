@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notification-microservice
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: notification-microservice
+  template:
+    metadata:
+      labels:
+        app: notification-microservice
+    spec:
+      containers:
+        - name: notification-microservice
+          image: "themisvas/notification-microservice:latest"
+          ports:
+            - containerPort: 8083
+          env:
+            - name: SPRING_RABBITMQ_HOST
+              value: rabbitmq
+            - name: SPRING_RABBITMQ_PORT
+              value: "5672"
+            - name: SPRING_RABBITMQ_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-secret
+                  key: rabbitmq-username
+            - name: SPRING_RABBITMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-secret
+                  key: rabbitmq-password
+            - name: SPRING_MAIL_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: email-secret
+                  key: SPRING_MAIL_HOST
+            - name: SPRING_MAIL_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: email-secret
+                  key: SPRING_MAIL_PORT
+            - name: SPRING_MAIL_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: email-secret
+                  key: SPRING_MAIL_USERNAME
+            - name: SPRING_MAIL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: email-secret
+                  key: SPRING_MAIL_PASSWORD
+            - name: RABBITMQ_EXCHANGE_NAME
+              value: notification.exchange
+            - name: RABBITMQ_AIR_QUEUE_NAME
+              value: air.notification.queue
+            - name: RABBITMQ_AIR_ROUTING_KEY
+              value: air.queue.user.notification
+            - name: RABBITMQ_WATER_QUEUE_NAME
+              value: water.notification.queue
+            - name: RABBITMQ_WATER_ROUTING_KEY
+              value: water.queue.user.notification
+            - name: RABBITMQ_SOIL_QUEUE_NAME
+              value: soil.notification.queue
+            - name: RABBITMQ_SOIL_ROUTING_KEY
+              value: soil.queue.user.notification

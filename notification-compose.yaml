@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  notification-microservice:
+    image: notification-microservice:latest
+    ports:
+      - "8080"
+    environment:
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: guest
+      SPRING_RABBITMQ_PASSWORD: guest
+      RABBITMQ_EXCHANGE_NAME: notification.exchange
+      RABBITMQ_AIR_QUEUE_NAME: air.notification.queue
+      RABBITMQ_AIR_ROUTING_KEY: air.queue.user.notification
+      RABBITMQ_WATER_QUEUE_NAME: water.notification.queue
+      RABBITMQ_WATER_ROUTING_KEY: water.queue.user.notification
+      RABBITMQ_SOIL_QUEUE_NAME: soil.notification.queue
+      RABBITMQ_SOIL_ROUTING_KEY: soil.queue.user.notification
+      SPRING_MAIL_HOST: smtp.gmail.com
+      SPRING_MAIL_PORT: 587
+      SPRING_MAIL_USERNAME: th3m.them@gmail.com
+      SPRING_MAIL_PASSWORD: ckonidsgtbylakhh
+      EUREKA_CLIENT_SERVICE_URL: http://eureka-server:8761/eureka/
+
+    networks:
+      - environment-pollution-network
+
+networks:
+  environment-pollution-network:
+    external: true
+    name: project_environment-pollution-network
